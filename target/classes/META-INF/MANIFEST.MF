@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: marcos
+Build-Jdk: 10.0.2
+Implementation-Title: sku-core
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: br.com.project.sku.core
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/product-core
+Created-By: Maven Integration for Eclipse
+

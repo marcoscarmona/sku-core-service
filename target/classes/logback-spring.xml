@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+
+	<property name="APPLICATION_NAME" value="sku-core" />
+	
+	 <springProfile name="dev,test">
+		<property name="APP_HOME" value="/home/marcos/logs" />
+	 </springProfile>
+
+	 <springProfile name="prod">
+		<property name="APP_HOME" value="/opt/${APPLICATION_NAME}/log" />
+	 </springProfile>
+
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${APP_HOME}/application.log</file>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<customFields>{"env":"prod", "app_name":"${APPLICATION_NAME}"}</customFields>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- rollover daily -->
+			<fileNamePattern>${APP_HOME}/archived/${APPLICATION_NAME}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+		    <maxHistory>30</maxHistory>
+		    <totalSizeCap>5GB</totalSizeCap>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+
+	<springProfile name="dev,test">
+		<logger name="br.com.project.sku.core" level="INFO" additivity="false">
+			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="FILE" />
+		</logger>
+		<logger name="org.springframework.security" level="DEBUG"
+			additivity="false">
+			<appender-ref ref="CONSOLE" />
+		</logger>
+		<logger name="org.springframework.web" level="INFO"
+			additivity="false">
+			<appender-ref ref="CONSOLE" />
+		</logger>
+		<logger name="org.hibernate.engine" level="ERROR"
+			additivity="false">
+			<appender-ref ref="CONSOLE" />
+		</logger>
+	</springProfile>
+	
+	<springProfile name="prod">
+		<logger name="br.com.project.sku.core" level="INFO"
+			additivity="false">
+			<appender-ref ref="FILE" />
+		</logger>
+		<logger name="org.springframework.security" level="DEBUG"
+			additivity="false">
+			<appender-ref ref="FILE" />
+		</logger>
+		<logger name="org.springframework.web" level="INFO"
+			additivity="false">
+			<appender-ref ref="FILE" />
+		</logger>
+		<logger name="org.hibernate.engine" level="ERROR"
+			additivity="false">
+			<appender-ref ref="FILE" />
+		</logger>
+	</springProfile>
+</configuration>
